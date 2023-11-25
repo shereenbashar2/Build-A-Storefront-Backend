@@ -1,0 +1,10 @@
+##Connect to PostgreSQL using the psql command-line tool.
+psql -U postgres
+
+##Grant necessary privileges to the user for the "public" schema.
+GRANT USAGE, CREATE ON SCHEMA public TO shopping_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO shopping_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO shopping_user;
+
+
+
