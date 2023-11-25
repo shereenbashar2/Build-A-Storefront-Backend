@@ -9,6 +9,9 @@ services:
       - .env
     volumes:
       - 'postgres:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_PASSWORD: 2.ApassW0rd  # Replace with your desired password
 
 volumes:
   postgres:
+
