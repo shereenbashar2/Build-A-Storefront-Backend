@@ -1,0 +1,9 @@
+-- SQL for creating the orders table
+
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE ON UPDATE RESTRICT,
+  quantity INTEGER,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE ON UPDATE RESTRICT,
+  status VARCHAR
+);
