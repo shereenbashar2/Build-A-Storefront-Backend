@@ -5,5 +5,5 @@ CREATE TABLE orders (
   product_id INTEGER REFERENCES products(id) ON DELETE CASCADE ON UPDATE RESTRICT,
   quantity INTEGER,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE ON UPDATE RESTRICT,
-  status VARCHAR
+  status VARCHAR(10) CHECK (status IN ('active', 'complete'))
 );
