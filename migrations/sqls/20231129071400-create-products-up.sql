@@ -5,3 +5,4 @@ CREATE TABLE products (
   price DECIMAL,
   category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+

@@ -50,7 +50,46 @@ export class ProductStore {
       conn?.release();
     }
   }
-
+  async update(id: string, updates: Partial<Product>): Promise<Product> {
+    let conn;
+    try {
+      conn = await Client.connect();
+      const sql =
+        'UPDATE products SET name = $1, price = $2, category = $3 WHERE id = $4 RETURNING *';
+      const result = await conn.query(sql, [
+        updates.name,
+        updates.price,
+        updates.category,
+        id,
+      ]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error(`Failed to update product ${id}. Error: ${(error as Error).message}`);
+    } finally {
+      if (conn) {
+        if (typeof conn.release === 'function') {
+          conn.release();
+        }
+      }
+    }
+  }
+  async delete(id: string): Promise<Product> {
+    let conn;
+    try {
+      conn = await Client.connect();
+      const sql = 'DELETE FROM products WHERE id = $1 RETURNING *';
+      const result = await conn.query(sql, [id]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error(`Failed to delete product ${id}. Error: ${(error as Error).message}`);
+    } finally {
+      if (conn) {
+        if (typeof conn.release === 'function') {
+          conn.release();
+        }
+      }
+    }
+  }
   async getTop5PopularProducts(): Promise<Product[]> {
     let conn;
     try {
