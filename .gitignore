@@ -19,7 +19,7 @@ pids/
 debug.log
 
 # Environment configuration
-.env
+# .env
 
 # Editor/IDE configuration
 .vscode/
