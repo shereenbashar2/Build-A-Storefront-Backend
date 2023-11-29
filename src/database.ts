@@ -10,13 +10,17 @@ const {
     POSTGRES_PASSWORD,
     POSTGRES_USER,
     POSTGRES_DB,
+    POSTGRES_TEST_DB,
     POSTGRES_PORT,
+    ENV,
 } = process.env as {
     POSTGRES_HOST: string;
     POSTGRES_PASSWORD: string;
     POSTGRES_USER: string;
     POSTGRES_DB: string;
+    POSTGRES_TEST_DB:string
     POSTGRES_PORT: string;
+    ENV:string
 };
 
 // Log connection details for debugging
@@ -25,30 +29,30 @@ console.log(`Host: ${POSTGRES_HOST}`);
 console.log(`User: ${POSTGRES_USER}`);
 console.log(`Database: ${POSTGRES_DB}`);
 console.log(`Port: ${POSTGRES_PORT}`);
+console.log(`Database Test: ${POSTGRES_TEST_DB}`);
 
-const pool = new Pool({
-  user: POSTGRES_USER,
-  host: POSTGRES_HOST,
-  database: POSTGRES_DB,
-  password: POSTGRES_PASSWORD,
-  port: parseInt(POSTGRES_PORT, 10),
-//   max: 20, // Adjust based on your application's needs
-//   idleTimeoutMillis: 30000, // Adjust based on your application's needs
-//   connectionTimeoutMillis: 2000, // Adjust based on your application's needs
-});
+let pool;
+if(ENV === 'ENV') {
+  pool = new Pool({
+    user: POSTGRES_USER,
+    host: POSTGRES_HOST,
+    database: POSTGRES_DB,
+    password: POSTGRES_PASSWORD,
+    port: parseInt(POSTGRES_PORT, 10),
+  })
+}
 
-// Handle connection events
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
+if(ENV === 'dev') {
+  pool = new Pool({
+    user: POSTGRES_USER,
+    host: POSTGRES_HOST,
+    database: POSTGRES_DB,
+    password: POSTGRES_PASSWORD,
+    port: parseInt(POSTGRES_PORT, 10),
 
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL');
-});
+  })
+}
 
-pool.on('remove', () => {
-  console.log('Client removed from pool');
-});
+
 
 export default pool;

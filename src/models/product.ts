@@ -1,3 +1,4 @@
+// @ts-ignore
 import Client from '../database';
 
 export type Product = {
@@ -11,6 +12,7 @@ export class ProductStore {
   async index(): Promise<Product[]> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM products';
       const result = await conn.query(sql);
@@ -25,6 +27,7 @@ export class ProductStore {
   async show(id: string): Promise<Product> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM products WHERE id=($1)';
       const result = await conn.query(sql, [id]);
@@ -39,6 +42,7 @@ export class ProductStore {
   async create(product: Omit<Product, 'id'>): Promise<Product> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql =
         'INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *';
@@ -53,6 +57,7 @@ export class ProductStore {
   async update(id: string, updates: Partial<Product>): Promise<Product> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql =
         'UPDATE products SET name = $1, price = $2, category = $3 WHERE id = $4 RETURNING *';
@@ -76,6 +81,7 @@ export class ProductStore {
   async delete(id: string): Promise<Product> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'DELETE FROM products WHERE id = $1 RETURNING *';
       const result = await conn.query(sql, [id]);
@@ -93,6 +99,7 @@ export class ProductStore {
   async getTop5PopularProducts(): Promise<Product[]> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql =
         'SELECT p.id, p.name, p.price, p.category FROM products p ' +
@@ -112,6 +119,7 @@ export class ProductStore {
   async getProductsByCategory(category: string): Promise<Product[]> {
     let conn;
     try {
+        // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM products WHERE category = $1';
       const result = await conn.query(sql, [category]);

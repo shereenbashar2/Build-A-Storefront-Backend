@@ -1,3 +1,4 @@
+// @ts-ignore
 import Client from '../database';
 
 export type Order = {
@@ -12,6 +13,7 @@ export class OrderModel {
   async index(): Promise<Order[]> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM orders';
       const result = await conn.query(sql);
@@ -30,6 +32,7 @@ export class OrderModel {
   async show(id: string): Promise<Order> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM orders WHERE id=($1)';
       const result = await conn.query(sql, [id]);
@@ -48,6 +51,7 @@ export class OrderModel {
   async create(order: Omit<Order, 'id'>): Promise<Order> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql =
         'INSERT INTO orders (product_id, quantity, user_id, status) VALUES($1, $2, $3, $4) RETURNING *';
@@ -66,6 +70,7 @@ export class OrderModel {
   async getCurrentOrderByUser(userId: string): Promise<Order | null> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = $1 AND status = $2';
       const result = await conn.query(sql, [userId, 'active']);
@@ -84,6 +89,7 @@ export class OrderModel {
   async getCompletedOrdersByUser(userId: string): Promise<Order[]> {
     let conn;
     try {
+       // @ts-ignore
       conn = await Client.connect();
       const sql = 'SELECT * FROM orders WHERE user_id = $1 AND status = $2';
       const result = await conn.query(sql, [userId, 'complete']);
