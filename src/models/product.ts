@@ -5,7 +5,7 @@ export type Product = {
   id: number;
   name: string;
   price: number;
-  category?: string; // Optional, as per your data shape
+  category_id: number | null;
 };
 
 export class ProductStore {
@@ -39,14 +39,14 @@ export class ProductStore {
     }
   }
 
-  async create(product: Omit<Product, 'id'>): Promise<Product> {
+  async create(product: Product): Promise<Product> {
     let conn;
     try {
        // @ts-ignore
       conn = await Client.connect();
       const sql =
-        'INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *';
-      const result = await conn.query(sql, [product.name, product.price, product.category]);
+        'INSERT INTO products (id,name, price, category_id) VALUES($1, $2, $3,$4) RETURNING *';
+      const result = await conn.query(sql, [product.id,product.name, product.price, product.category_id]);
       return result.rows[0];
     } catch (error) {
       throw new Error(`Could not add new product ${product.name}. Error: ${(error as Error).message}`);
@@ -54,17 +54,17 @@ export class ProductStore {
       conn?.release();
     }
   }
-  async update(id: string, updates: Partial<Product>): Promise<Product> {
+  async update(id: number, updates: Partial<Product>): Promise<Product> {
     let conn;
     try {
        // @ts-ignore
       conn = await Client.connect();
       const sql =
-        'UPDATE products SET name = $1, price = $2, category = $3 WHERE id = $4 RETURNING *';
+        'UPDATE products SET name = $1, price = $2, category_id = $3 WHERE id = $4 RETURNING *';
       const result = await conn.query(sql, [
         updates.name,
         updates.price,
-        updates.category,
+        updates.category_id,
         id,
       ]);
       return result.rows[0];
@@ -78,7 +78,7 @@ export class ProductStore {
       }
     }
   }
-  async delete(id: string): Promise<Product> {
+  async delete(id: number): Promise<Product> {
     let conn;
     try {
        // @ts-ignore
@@ -102,7 +102,7 @@ export class ProductStore {
        // @ts-ignore
       conn = await Client.connect();
       const sql =
-        'SELECT p.id, p.name, p.price, p.category FROM products p ' +
+        'SELECT p.id, p.name, p.price, p.category_id FROM products p ' +
         'JOIN orders o ON p.id = o.product_id ' +
         'GROUP BY p.id ' +
         'ORDER BY SUM(o.quantity) DESC ' +
@@ -116,12 +116,12 @@ export class ProductStore {
     }
   }
 
-  async getProductsByCategory(category: string): Promise<Product[]> {
+  async getProductsByCategory(category: number): Promise<Product[]> {
     let conn;
     try {
         // @ts-ignore
       conn = await Client.connect();
-      const sql = 'SELECT * FROM products WHERE category = $1';
+      const sql = 'SELECT * FROM products WHERE category_id = $1';
       const result = await conn.query(sql, [category]);
       return result.rows;
     } catch (error) {
@@ -130,4 +130,6 @@ export class ProductStore {
       conn?.release();
     }
   }
+
+  
 }

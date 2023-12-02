@@ -10,7 +10,7 @@ const {
     POSTGRES_PASSWORD,
     POSTGRES_USER,
     POSTGRES_DB,
-    POSTGRES_TEST_DB,
+    POSTGRES_NAME_TEST,
     POSTGRES_PORT,
     ENV,
 } = process.env as {
@@ -18,41 +18,36 @@ const {
     POSTGRES_PASSWORD: string;
     POSTGRES_USER: string;
     POSTGRES_DB: string;
-    POSTGRES_TEST_DB:string
+    POSTGRES_NAME_TEST:string
     POSTGRES_PORT: string;
     ENV:string
 };
 
-// Log connection details for debugging
-console.log('Connecting to PostgreSQL with the following details:');
-console.log(`Host: ${POSTGRES_HOST}`);
-console.log(`User: ${POSTGRES_USER}`);
-console.log(`Database: ${POSTGRES_DB}`);
-console.log(`Port: ${POSTGRES_PORT}`);
-console.log(`Database Test: ${POSTGRES_TEST_DB}`);
 
+
+const environment = ENV.trim().toLowerCase(); // Convert to lowercase and trim whitespaces
+console.log(`${environment}`);
 let pool;
-if(ENV === 'ENV') {
+if (environment === 'test') {
+  console.log(`Database: ${POSTGRES_NAME_TEST}`);
+  pool = new Pool({
+    user: POSTGRES_USER,
+    host: POSTGRES_HOST,
+    database: POSTGRES_NAME_TEST, // Use POSTGRES_NAME_TEST for the test environment
+    password: POSTGRES_PASSWORD,
+    port: parseInt(POSTGRES_PORT, 10),
+  });
+} else if (environment === 'dev') {
+  console.log(`Database: ${POSTGRES_DB}`);
   pool = new Pool({
     user: POSTGRES_USER,
     host: POSTGRES_HOST,
     database: POSTGRES_DB,
     password: POSTGRES_PASSWORD,
     port: parseInt(POSTGRES_PORT, 10),
-  })
+  });
+} else {
+  console.error(`Invalid environment: ${environment}`);
 }
-
-if(ENV === 'dev') {
-  pool = new Pool({
-    user: POSTGRES_USER,
-    host: POSTGRES_HOST,
-    database: POSTGRES_DB,
-    password: POSTGRES_PASSWORD,
-    port: parseInt(POSTGRES_PORT, 10),
-
-  })
-}
-
-
 
 export default pool;

@@ -1,35 +1,71 @@
-import { Product, ProductStore } from '../product';
+import { ProductStore } from '../product';
 
-const product = new ProductStore()
+const store = new ProductStore();
 
+describe('ProductStore', () => {
+  describe('Methods', () => {
+    beforeEach(() => {
+      // Common setup code if needed
+    });
 
-describe("Product Model", () => {
-  it('should have an index method', () => {
-    expect(product.index).toBeDefined();
+    it('should have an index method', () => {
+      expect(store.index).toBeDefined();
+    });
+
+    it('should have a show method', () => {
+      expect(store.show).toBeDefined();
+    });
+
+    it('should have a create method', () => {
+      expect(store.create).toBeDefined();
+    });
+
+    it('should have an update method', () => {
+      expect(store.update).toBeDefined();
+    });
+
+    it('should have a delete method', () => {
+      expect(store.delete).toBeDefined();
+    });
+
+    it('should have a getTop5PopularProducts method', () => {
+      expect(store.getTop5PopularProducts).toBeDefined();
+    });
+
+    it('should have a getProductsByCategory method', () => {
+      expect(store.getProductsByCategory).toBeDefined();
+    });
   });
 
-  it('should have a show method', () => {
-    expect(product.show).toBeDefined();
+  describe('Method: create', () => {
+    it('should add a product', async () => {
+      const result = await store.create({
+        id: 1,
+        name: 'Sample Product',
+        price: Number(50),
+        category_id:null
+      });
+      expect(result).toEqual({
+        id: 1,
+        name: 'Sample Product',
+        price:  Number(50),
+        category_id:null
+
+      });
+    });
   });
 
-  it('should have a create method', () => {
-    expect(product.index).toBeDefined();
-  });
-
-  it('should have a update method', () => {
-    expect(product.update).toBeDefined();
-  });
-
-  it('should have a delete method', () => {
-    expect(product.delete).toBeDefined();
-  });
-
-
-  it('should have a getTop5PopularProducts method', () => {
-    expect(product.getTop5PopularProducts).toBeDefined();
-  });
-
-  it('should have a getProductsByCategory method', () => {
-    expect(product.getProductsByCategory).toBeDefined();
+  describe('Method: index', () => {
+    it('should return a list of products', async () => {
+      const result = await store.index();
+      expect(result).toEqual([
+        {
+          id: 1,
+          name: 'Sample Product',
+          price: Number(50),
+          category_id:null
+        },
+      ]);
+    });
   });
 });
