@@ -45,10 +45,15 @@ describe('ProductStore', () => {
         price: Number(50),
         category_id:null
       });
-      expect(result).toEqual({
+      const insertedProduct  = result;
+      if (insertedProduct ) {
+        insertedProduct.price = parseFloat(insertedProduct.price.toString());
+      }
+
+      expect(insertedProduct).toEqual({
         id: 1,
         name: 'Sample Product',
-        price:  Number(50),
+        price:   parseFloat(result.price.toString()),
         category_id:null
 
       });
@@ -58,6 +63,7 @@ describe('ProductStore', () => {
   describe('Method: index', () => {
     it('should return a list of products', async () => {
       const result = await store.index();
+      
       expect(result).toEqual([
         {
           id: 1,

@@ -16,7 +16,13 @@ export class ProductStore {
       conn = await Client.connect();
       const sql = 'SELECT * FROM products';
       const result = await conn.query(sql);
-      return result.rows;
+      // Convert the price property of each product to a number
+    const products: Product[] = result.rows.map((product: Product) => ({
+      ...product,
+      price: parseFloat(product.price.toString()),
+    }));
+
+    return products;
     } catch (error) {
       throw new Error(`Could not get products. Error: ${(error as Error).message}`);
     } finally {
@@ -31,7 +37,13 @@ export class ProductStore {
       conn = await Client.connect();
       const sql = 'SELECT * FROM products WHERE id=($1)';
       const result = await conn.query(sql, [id]);
-      return result.rows[0];
+      const product = result.rows[0];
+
+    // Ensure that the price property is a number
+    if (product ) {
+      product.price = parseFloat(product.price.toString());
+    }
+      return product;
     } catch (error) {
       throw new Error(`Could not find product ${id}. Error: ${(error as Error).message}`);
     } finally {
@@ -46,8 +58,19 @@ export class ProductStore {
       conn = await Client.connect();
       const sql =
         'INSERT INTO products (id,name, price, category_id) VALUES($1, $2, $3,$4) RETURNING *';
-      const result = await conn.query(sql, [product.id,product.name, product.price, product.category_id]);
-      return result.rows[0];
+        const result = await conn.query(sql, [
+          product.id,
+          product.name,
+          parseFloat(product.price.toString()), // Convert price to number
+          product.category_id,
+        ]);
+
+        const insertedProduct  = result.rows[0];
+        if (product ) {
+          product.price = parseFloat(product.price.toString());
+        }
+
+      return insertedProduct;
     } catch (error) {
       throw new Error(`Could not add new product ${product.name}. Error: ${(error as Error).message}`);
     } finally {
