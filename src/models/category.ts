@@ -3,8 +3,8 @@ import Client from '../database';
 
 export type Category = {
   id: number;
-  name: number;
-  description?: number; // Optional, as per your data shape
+  name: string;
+  description?: string; // Optional, as per your data shape
 };
 
 export class CategoryModel {
@@ -27,7 +27,7 @@ export class CategoryModel {
     }
   }
 
-  async show(id: string): Promise<Category> {
+  async show(id: number): Promise<Category> {
     let conn;
     try {
          // @ts-ignore
@@ -63,22 +63,42 @@ export class CategoryModel {
       }
     }
   }
-  async update(id: string, updatedCategory: Category): Promise<Category> {
+  async update(id: number, updatedCategory: Category): Promise<Category> {
     let conn;
-     // @ts-ignore
+
+     try {
+           // @ts-ignore
     conn = await Client.connect();
     const sql = 'UPDATE categories SET name = $2, description = $3 WHERE id = $1 RETURNING *';
     const result = await conn.query(sql, [id, updatedCategory.name, updatedCategory.description]);
     return result.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to update category ${id}. Error: ${(error as Error).message}`);
+
+  } finally {
+    if (conn) {
+      if (typeof conn.release === 'function') {
+        conn.release();
+      }
+    }
+  }
   }
 
-  async delete(id: string): Promise<Category> {
+  async delete(id: number): Promise<Category> {
     let conn;
-    // @ts-ignore
-    conn = await Client.connect();
-    const sql = 'DELETE FROM categories WHERE id = $1 RETURNING *';
-    const result = await conn.query(sql, [id]);
-    return result.rows[0];
+    try {
+           // @ts-ignore
+      conn = await Client.connect();
+      const sql = 'DELETE FROM categories WHERE id = $1 RETURNING *';
+      const result = await conn.query(sql, [id]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error(`Failed to delete category ${id}. Error: ${(error as Error).message}`)
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
   }
-  // Add other methods as needed, such as update and delete
+  
 }

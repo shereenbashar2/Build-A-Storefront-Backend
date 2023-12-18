@@ -43,7 +43,7 @@ describe('ProductStore', () => {
         id: 1,
         name: 'Sample Product',
         price: Number(50),
-        category_id:null
+        category_id:1
       });
       const insertedProduct  = result;
       if (insertedProduct ) {
@@ -54,7 +54,7 @@ describe('ProductStore', () => {
         id: 1,
         name: 'Sample Product',
         price:   parseFloat(result.price.toString()),
-        category_id:null
+        category_id:1
 
       });
     });
@@ -69,7 +69,7 @@ describe('ProductStore', () => {
           id: 1,
           name: 'Sample Product',
           price: Number(50),
-          category_id:null
+          category_id:1
         },
       ]);
     });
